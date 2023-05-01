@@ -1,0 +1,16 @@
+body{
+    min-height: 100vh;
+}
+
+.landing{
+    background-color: var(--nav-color);
+    height: 490px;
+}
+
+.cover{
+    padding: 0px;
+}
+
+.email {
+    z-index: 5;
+}

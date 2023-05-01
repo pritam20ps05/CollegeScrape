@@ -1,0 +1,103 @@
+{% macro header() -%}
+<meta charset="utf-8" />
+<meta name="description" content="Know your eligible colleges for free with our latest tool featuring 2022 official counselling data.">
+<meta name="keywords" content="counselling, college, B.Tech, IIT, NIT, IIIT, GFTI">
+<meta name="author" content="Pritam Das">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#712cf9" />
+<link
+  rel="apple-touch-icon"
+  sizes="180x180"
+  href="{{url_for('static', filename='favicon_io/apple-touch-icon.png')}}"
+/>
+<link
+  rel="icon"
+  type="image/png"
+  sizes="32x32"
+  href="{{url_for('static', filename='favicon_io/favicon-32x32.png')}}"
+/>
+<link
+  rel="icon"
+  type="image/png"
+  sizes="16x16"
+  href="{{url_for('static', filename='favicon_io/favicon-16x16.png')}}"
+/>
+<link rel="manifest" href="{{url_for('static', filename='favicon_io/site.webmanifest')}}" />
+<link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+  integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
+  crossorigin="anonymous"
+/>
+<link rel="stylesheet" href="{{url_for('static', filename='css/base.css')}}" />
+{%- endmacro %} {% macro navbar(active=0) -%}
+<nav class="navbar navbar-expand-lg" style="background-color: var(--nav-color)">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">
+      <img
+        src="{{url_for('static', filename='collegescrape-logo.png')}}"
+        alt="CounselScrape"
+        width="170"
+        height="40"
+        class="d-inline-block align-text-top"
+      />
+    </a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mb-2 mb-lg-0 ms-auto">
+        <li class="nav-item">
+          <a class="nav-link {% if active == 1 %}active{% endif %}" {% if active == 1 %} aria-current="page" {% endif %} href="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if active == 2 %}active{% endif %}" {% if active == 2 %} aria-current="page" {% endif %} href="/counsellingsearch">Counselling Search</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if active == 3 %}active{% endif %}" {% if active == 3 %} aria-current="page" {% endif %} href="/collegesearch">College Search</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if active == 4 %}active{% endif %}" {% if active == 4 %} aria-current="page" {% endif %} href="/#aboutus">About Us</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+{%- endmacro %} {% macro footer() -%}
+<footer class="d-flex flex-wrap justify-content-between align-items-center py-3 mt-auto border-top">
+  <div class="d-flex align-items-center">
+    <a href="/" class="mx-2 mb-md-0 text-muted text-decoration-none lh-1">
+      <img
+        src="{{url_for('static', filename='collegescrape-fav.png')}}"
+        alt=""
+        width="40"
+        height="34"
+      />
+    </a>
+    <span class="text-muted">© 2023 COLLEGESCRAPE</span>
+  </div>
+
+  <div class="small-footer-text">Made by Pritam Das</div>
+
+  <ul class="nav justify-content-end">
+    <li class="nav-item"><a href="/#techused" class="nav-link px-2">Technologies Used</a></li>
+    <li class="nav-item"><a href="/#aboutus" class="nav-link px-2">Contact Us</a></li>
+    <li class="nav-item"><a href="/#aboutus" class="nav-link px-2">About Us</a></li>
+  </ul>
+</footer>
+{%- endmacro %} {% macro scripts() -%}
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+  crossorigin="anonymous"
+></script>
+{%- endmacro %}

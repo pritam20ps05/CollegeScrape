@@ -1,0 +1,31 @@
+body {
+  min-height: 110rem;
+}
+
+@media (max-width: 770px) {
+  /* style pagination */
+  .fixed-table-pagination{
+    flex-direction: column;
+    font-size: 0.85rem!important;
+  }
+
+  .pagination-detail{
+    margin: auto;
+  }
+
+  .pagination{
+    margin: auto;
+  }
+}
+
+/* style pagination */
+.fixed-table-pagination{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  font-size: 0.9rem;
+}
+
+.pagination{
+  margin-left: auto;
+}
