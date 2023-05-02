@@ -169,6 +169,7 @@ def counseldata():
         return 400
     elif str(query.get('acckey')) not in allowedKeys:
         return 403
+    keydata.update_one({'key': str(query.get('acckey'))}, {'$inc': {'notu': 1}})
     coun_col = db[coun_data['collection']]
     db_query = dbQuery(query)
     counsellingdata = coun_col.find(db_query, {'_id': 0}, limit=500)
