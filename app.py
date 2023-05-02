@@ -71,7 +71,7 @@ def collegeSearch():
 @app.route("/api/counsellinginfo", methods=['POST'])
 def counselinfo():
     query = request.get_json()
-    counsellinginfo = cdata_col.find_one({'counselling': query.get('counsellingname')}, {'_id': 0, 'collection': 0})
+    counsellinginfo = cdata_col.find_one({'counselling': str(query.get('counsellingname'))}, {'_id': 0, 'collection': 0})
     return counsellinginfo
 
 @app.route("/api/institutetypefilter", methods=['POST'])
@@ -92,7 +92,7 @@ def insttfilter():
         'gens': []
     }
     query.update(qe)
-    coun_data = cdata_col.find_one({'counselling': query.get('counsellingname')}, {'_id': 0})
+    coun_data = cdata_col.find_one({'counselling': str(query.get('counsellingname'))}, {'_id': 0})
     if not (coun_data and isQueryValid(query, schema)):
         return 400
     coun_col = db[coun_data['collection']]
@@ -122,7 +122,7 @@ def instfilter():
         'gens': []
     }
     query.update(qe)
-    coun_data = cdata_col.find_one({'counselling': query.get('counsellingname')}, {'_id': 0})
+    coun_data = cdata_col.find_one({'counselling': str(query.get('counsellingname'))}, {'_id': 0})
     if not (coun_data and isQueryValid(query, schema)):
         return 400
     coun_col = db[coun_data['collection']]
@@ -164,10 +164,10 @@ def counseldata():
     }
     allowedKeys = keydata.distinct('key')
     query = request.get_json()
-    coun_data = cdata_col.find_one({'counselling': query.get('counsellingname')}, {'_id': 0})
+    coun_data = cdata_col.find_one({'counselling': str(query.get('counsellingname'))}, {'_id': 0})
     if not (coun_data and isQueryValid(query, schema)):
         return 400
-    elif query.get('acckey') not in allowedKeys:
+    elif str(query.get('acckey')) not in allowedKeys:
         return 403
     coun_col = db[coun_data['collection']]
     db_query = dbQuery(query)
