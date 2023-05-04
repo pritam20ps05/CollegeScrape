@@ -86,6 +86,12 @@
 
                 <div class="col-sm-6">
                   <label for="rank-buff" class="form-label">Rank Buffer</label>
+                  <i
+                    role="button"
+                    class="bi bi-question-circle ms-1 opacity-75"
+                    data-bs-toggle="modal"
+                    data-bs-target="#rankbuffinfo"
+                  ></i>
                   <input
                     type="number"
                     class="form-control stage2"
@@ -94,6 +100,36 @@
                     disabled
                   />
                   <div class="invalid-feedback">Please enter a valid rank buffer</div>
+                  <div class="modal fade" id="rankbuffinfo" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">Rank Buffer</h5>
+                          <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                          ></button>
+                        </div>
+                        <div class="modal-body">
+                          <p>
+                            Rank buffer is a part of the search query (filter) which if set return
+                            results with closing rank within rank - rank_buffer and rank +
+                            rank_buffer. Its intented use is to narrow the scope of the results and
+                            is generally used for low ranks (high scorers) to filter out
+                            potential unwanted courses or colleges. At high ranks (low scorers) 
+                            setting it might cause no results to be shown at all, for obvious
+                            reasons.
+                          </p>
+                          <p>
+                            If Rank Buffer is not set then results will have closing rank less than 
+                            or equal to the provided rank filter (if provided).
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <div class="col-sm-6">
@@ -207,7 +243,7 @@
     <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.27.0/libs/jsPDF/jspdf.umd.min.js"></script>
     <script src="https://unpkg.com/bootstrap-table@1.21.4/dist/bootstrap-table.min.js"></script>
     <script src="https://unpkg.com/bootstrap-table@1.21.4/dist/extensions/toolbar/bootstrap-table-toolbar.min.js"></script>
-    <script src="https://unpkg.com/bootstrap-table@1.21.4/dist/extensions/export/bootstrap-table-export.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.21.4/dist/extensions/export/bootstrap-table-export.min.js"></script>
     <script src="https://unpkg.com/bootstrap-table@1.21.4/dist/extensions/print/bootstrap-table-print.min.js"></script>
     <script src="{{url_for('static', filename='js/counsellingsearch.js')}}"></script>
   </body>
