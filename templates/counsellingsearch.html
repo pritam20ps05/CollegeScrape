@@ -193,20 +193,6 @@
                   ></select>
                 </div>
 
-                <div class="col-sm-12">
-                  <label for="api-acc" class="form-label">Access Key</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="api-acc"
-                    placeholder="e.g. abcd#123"
-                    required
-                  />
-                  <div id="api-acc-if" class="invalid-feedback">
-                    Please enter a valid access key
-                  </div>
-                </div>
-
                 <button class="w-100 btn btn-primary btn-lg" type="submit">Search</button>
               </div>
             </form>
@@ -245,6 +231,6 @@
     <script src="https://unpkg.com/bootstrap-table@1.21.4/dist/extensions/toolbar/bootstrap-table-toolbar.min.js"></script>
     <script src="https://unpkg.com/bootstrap-table@1.21.4/dist/extensions/export/bootstrap-table-export.min.js"></script>
     <script src="https://unpkg.com/bootstrap-table@1.21.4/dist/extensions/print/bootstrap-table-print.min.js"></script>
-    <script src="{{url_for('static', filename='js/counsellingsearch.js')}}"></script>
+    <script src="{{url_for('static', filename='js/counsellingsearch.min.js')}}"></script>
   </body>
 </html>

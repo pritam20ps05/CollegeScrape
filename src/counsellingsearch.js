@@ -1,13 +1,26 @@
 var counsellingData = {};
 var counsellingDataSelect2 = {};
 
+function e3(str, asString=true, seed=23) {
+  var i, l, hval = (seed === undefined) ? 0x811c9dc5 : seed;
+
+  for (i = 0, l = str.length; i < l; i++) {
+    hval ^= str.charCodeAt(i);
+    hval += (hval << 13) + (hval << 11) + (hval << 17) + (hval << 7) + (hval << 24);
+  }
+  if( asString ){
+    var s = ("0000000" + (hval >>> 0).toString(16))
+    return s.substring(s.length-8);
+  }
+  return hval >>> 0;
+}
+
 // Form validation code
 (() => {
   "use strict";
 
   // Fetch all the forms we want to apply custom Bootstrap validation styles to
   const forms = $(".needs-validation");
-  const acckey = $("#api-acc");
 
   // Loop over them and prevent submission
   Array.from(forms).forEach((form) => {
@@ -16,9 +29,10 @@ var counsellingDataSelect2 = {};
       (event) => {
         event.preventDefault();
         event.stopPropagation();
-        if (isFormValid(form, acckey)) {
+        var key = isFormValid(form);
+        if (key) {
           form.classList.remove("was-validated");
-          formCallback(acckey);
+          formCallback(key);
         } else {
           form.classList.add("was-validated");
         }
@@ -28,31 +42,21 @@ var counsellingDataSelect2 = {};
   });
 })();
 
-function isFormValid(form, accKey) {
+function isFormValid(form) {
   if (form.checkValidity()) {
-    // check if access key valid
     var res = $.ajax({
       method: "POST",
       url: "/api/authorize",
-      data: JSON.stringify({ acckey: accKey.val() }),
-      contentType: "application/json",
-      dataType: "json",
       async: false,
     }).responseJSON;
 
-    if (res.isValid) {
-      accKey.removeClass("is-invalid");
-      return true;
-    } else {
-      accKey.addClass("is-invalid");
-      return false;
-    }
+    return res.key
   } else {
     return false;
   }
 }
 
-function formCallback(acckey) {
+function formCallback(key) {
   // get form data
   var instts = Array();
   var insts = Array();
@@ -103,7 +107,8 @@ function formCallback(acckey) {
     quotas: quotas,
     sts: sts,
     gens: gens,
-    acckey: acckey.val(),
+    key: key,
+    token: e3(key),
   };
   // update data on table
   $.ajax({

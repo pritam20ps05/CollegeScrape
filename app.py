@@ -1,13 +1,40 @@
 from os import environ
 from flask import Flask, render_template, request, Response
-import pymongo
+import pymongo, random, string
 
 client = pymongo.MongoClient(environ['MONGODB_URI'])
 db = client.counselling
 cdata_col = db.counsellingData
-keydata = db.accKeys
 app = Flask(__name__)
 
+
+class Authorize():
+    registeredkeys = []
+    maxkeys = 100
+    def genKey(self):
+        newkey = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for _ in range(16))
+        self.registeredkeys.append(newkey)
+        if len(self.registeredkeys) > self.maxkeys:
+            self.registeredkeys.pop(0)
+        return newkey
+    
+    def hash_fnv32a(self, str, as_string=True, seed=23):
+        hval = 0x811c9dc5 if seed is None else seed
+        for c in str:
+            hval ^= ord(c)
+            hval += (hval << 13) + (hval << 11) + (hval << 17) + (hval << 7) + (hval << 24)
+        if as_string:
+            return f"{hval & 0xffffffff:08x}"
+        return hval & 0xffffffff
+    
+    def isKeyValid(self, key, enckey):
+        if key in self.registeredkeys:
+            if enckey == self.hash_fnv32a(key):
+                self.registeredkeys.remove(key)
+                return True
+        return False
+
+auth = Authorize()
 
 # Helper functions
 def isQueryValid(query: dict, schema: dict):
@@ -94,7 +121,7 @@ def insttfilter():
     query.update(qe)
     coun_data = cdata_col.find_one({'counselling': str(query.get('counsellingname'))}, {'_id': 0})
     if not (coun_data and isQueryValid(query, schema)):
-        return 400
+        return 'Bad request', 400
     coun_col = db[coun_data['collection']]
     db_query = dbQuery(query)
     insts = coun_col.distinct('Institute', db_query)
@@ -124,7 +151,7 @@ def instfilter():
     query.update(qe)
     coun_data = cdata_col.find_one({'counselling': str(query.get('counsellingname'))}, {'_id': 0})
     if not (coun_data and isQueryValid(query, schema)):
-        return 400
+        return 'Bad request', 400
     coun_col = db[coun_data['collection']]
     db_query = dbQuery(query)
     apns = coun_col.distinct('Academic Program Name', db_query)
@@ -134,18 +161,10 @@ def instfilter():
 
 @app.route("/api/authorize", methods=['POST'])
 def authorize():
-    key = request.get_json()['acckey']
-    allowedKeys = keydata.distinct('key')
-    if key in allowedKeys:
-        return {
-            "isValid": True,
-            "error": ""
-        }
-    else:
-        return {
-            "isValid": False,
-            "error": "Provided Access Key is not valid"
-        }
+    newkey = auth.genKey()
+    return {
+        "key": newkey
+    }
     
 @app.route("/api/counsellingdata", methods=['POST'])
 def counseldata():
@@ -160,16 +179,18 @@ def counseldata():
         'quotas': '<class \'list\'>', 
         'sts': '<class \'list\'>', 
         'gens': '<class \'list\'>', 
-        'acckey': '<class \'str\'>'
+        'key': '<class \'str\'>',
+        'token': '<class \'str\'>',
     }
-    allowedKeys = keydata.distinct('key')
     query = request.get_json()
+    if not isQueryValid(query, schema):
+        return 'Bad request, Invaild query', 400
+    iskeyvalid = auth.isKeyValid(str(query.get('key')), str(query.get('token')))
+    if not iskeyvalid:
+        return 'Forbidden request, Key mismatch', 403
     coun_data = cdata_col.find_one({'counselling': str(query.get('counsellingname'))}, {'_id': 0})
-    if not (coun_data and isQueryValid(query, schema)):
-        return 400
-    elif str(query.get('acckey')) not in allowedKeys:
-        return 403
-    keydata.update_one({'key': str(query.get('acckey'))}, {'$inc': {'notu': 1}})
+    if not coun_data:
+        return 'Bad request, counselling does not exist', 400
     coun_col = db[coun_data['collection']]
     db_query = dbQuery(query)
     counsellingdata = coun_col.find(db_query, {'_id': 0}, limit=500)
