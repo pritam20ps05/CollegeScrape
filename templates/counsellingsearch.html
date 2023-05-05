@@ -24,7 +24,7 @@
     {{ base.navbar(2) }}
 
     <div class="alert alert-primary d-flex align-items-center justify-content-center" role="alert">
-      This tool is currently under early access so maximum number of results is capped at 1000 and export option might cause lag in some devices for large data
+      This tool is currently under early access so maximum number of results is capped at 1000
     </div>
 
     <div class="container my-3">
@@ -229,8 +229,7 @@
     <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.27.0/libs/jsPDF/jspdf.umd.min.js"></script>
     <script src="https://unpkg.com/bootstrap-table@1.21.4/dist/bootstrap-table.min.js"></script>
     <script src="https://unpkg.com/bootstrap-table@1.21.4/dist/extensions/toolbar/bootstrap-table-toolbar.min.js"></script>
-    <script src="https://unpkg.com/bootstrap-table@1.21.4/dist/extensions/export/bootstrap-table-export.min.js"></script>
-    <script src="https://unpkg.com/bootstrap-table@1.21.4/dist/extensions/print/bootstrap-table-print.min.js"></script>
-    <script src="{{url_for('static', filename='js/counsellingsearch.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/bootstrap-table-print.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/csofs.min.js')}}"></script>
   </body>
 </html>
