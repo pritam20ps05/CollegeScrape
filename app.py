@@ -1,11 +1,20 @@
-from os import environ
 from flask import Flask, render_template, request, Response
+from flask_mail import Mail, Message
 import pymongo, random, string
+from os import environ
 
 client = pymongo.MongoClient(environ['MONGODB_URI'])
 db = client.counselling
 cdata_col = db.counsellingData
 app = Flask(__name__)
+app.config['SECRET_KEY'] = environ['SECRET_KEY']
+app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = environ['MAIL_USERNAME']
+app.config['MAIL_PASSWORD'] = environ['MAIL_PASSWORD']
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+mail = Mail(app)
 
 
 class Authorize():
@@ -94,6 +103,35 @@ def collegeSearch():
     return render_template('collegesearch.html')
 
 # API routes
+
+@app.route("/api/contactus", methods=['POST'])
+def contactus():
+    schema = {
+        'name': '<class \'str\'>',
+        'email': '<class \'str\'>',
+        'subject': '<class \'str\'>',
+        'message': '<class \'str\'>',
+        'key': '<class \'str\'>',
+        'token': '<class \'str\'>',
+    }
+    query = request.get_json()
+    if not isQueryValid(query, schema):
+        return 'Bad request, Invaild query', 400
+    iskeyvalid = auth.isKeyValid(str(query.get('key')), str(query.get('token')))
+    if not iskeyvalid:
+        return 'Forbidden request, Key mismatch', 403
+    
+    sname = str(query.get('name'))
+    smail = str(query.get('email'))
+    ssubject = str(query.get('subject'))
+    smessage = str(query.get('message'))
+
+    msg = Message(f'{sname}: {ssubject}', sender = environ['MAIL_USERNAME'], recipients = [environ['MAIL_RECIPIENT']])
+    msg.body = f"Mail: {smail}\n\n{smessage}"
+    mail.send(msg)
+    return {
+        'message': 'Your query has been successfully submited'
+    }
 
 @app.route("/api/counsellinginfo", methods=['POST'])
 def counselinfo():
