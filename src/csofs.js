@@ -36,7 +36,7 @@ function isFormValid(form) {
       async: false,
     }).responseJSON;
 
-    return res.key
+    return res.key;
   } else {
     return false;
   }
@@ -176,6 +176,30 @@ $("#table").bootstrapTable({
   advancedSearch: true,
   idTable: "advancedTable",
   showPrint: true,
+  printPageBuilder: (table) => {
+    return `
+    <html>
+      <head>
+        <style type="text/css" media="print"> 
+          @page {   size: auto;  margin: 25px 0 25px 0;  }  
+        </style>  
+        <style type="text/css" media="all">  
+          table {    border-collapse: collapse;    font-size: 12px;  }  
+          table, th, td {    border: 1px solid grey; }  
+          th, td {    text-align: center;   vertical-align: middle;  }  
+          p {    font-weight: bold;    margin-left:20px;  }  
+          table {    width:94%;    margin-left:3%;    margin-right:3%;  }  
+          div.bs-table-print {    text-align:center;  }  
+        </style>  
+      </head>  
+      <title>Print Table</title>  
+      <body> 
+        <h1 style="text-align: center;">${counsellingData.counselling}</h1> 
+        <p>Printed on: ${new Date()} </p>
+        <div class="bs-table-print"> ${table} </div>  
+      </body>  
+    </html>`
+  },
   data: [],
 });
 
