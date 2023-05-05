@@ -231,7 +231,7 @@ def counseldata():
         return 'Bad request, counselling does not exist', 400
     coun_col = db[coun_data['collection']]
     db_query = dbQuery(query)
-    counsellingdata = coun_col.find(db_query, {'_id': 0}, limit=1000)
+    counsellingdata = coun_col.find(db_query, {'_id': 0})
     retdat = []
     for cd in counsellingdata:
         retdat.append(cd)
