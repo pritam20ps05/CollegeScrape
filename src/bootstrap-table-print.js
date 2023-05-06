@@ -2438,13 +2438,14 @@
         data = filterRows(data, getColumnFilters(this.options.columns));
         data = sortRows(data, this.options.printSortColumn, this.options.printSortOrder);
         var table = buildTable(data, this.options.columns);
-        var newWin = window.open('');
         var calculatedPrintPage = Utils.calculateObjectValue(this, this.options.printPageBuilder, [table], printPageBuilderDefault(table));
+        var newWin = window.open('');
         newWin.document.write(calculatedPrintPage);
         newWin.document.close();
         newWin.focus();
-        newWin.print();
+        newWin.onfocus = newWin.close;
         newWin.onmousemove = newWin.close;
+        newWin.print();
       }
     }]);
     return _class;
