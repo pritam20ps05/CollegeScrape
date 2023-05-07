@@ -89,9 +89,47 @@
 
   <ul class="nav justify-content-end">
     <li class="nav-item"><a href="/#techused" class="nav-link px-2">Technologies Used</a></li>
-    <li class="nav-item"><a href="/#aboutus" class="nav-link px-2">Contact Us</a></li>
+    <li class="nav-item"><a href="" data-bs-target="#contactus" data-bs-toggle="modal" class="nav-link px-2">Contact Us</a></li>
     <li class="nav-item"><a href="/#aboutus" class="nav-link px-2">About Us</a></li>
   </ul>
+  <div class="modal fade" id="contactus" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Contact Us</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div id="contactusinfo" class="alert alert-primary d-none" role="alert">
+          </div>
+          <form id="cscontactus" class="needs-validation" novalidate="">
+            <div class="mb-3">
+              <label for="cuname" class="form-label">Full Name</label>
+              <input type="text" class="form-control" id="cuname" placeholder="e.g. Alan Walker" required>
+            </div>
+            <div class="mb-3">
+              <label for="cuemail" class="form-label">Email</label>
+              <input type="email" class="form-control" id="cuemail" placeholder="e.g. someone@example.com" required>
+            </div>
+            <div class="mb-3">
+              <label for="cuname" class="form-label">Subject</label>
+              <input type="text" class="form-control" id="cusubject" placeholder="e.g. Issue with nav" required>
+            </div>
+            <div class="mb-3">
+              <label for="cumessage" class="form-label">Message</label>
+              <textarea class="form-control" id="cumessage" rows="4" required></textarea>
+            </div>
+            <button type="submit" class="w-100 btn btn-primary btn-lg">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </footer>
 {%- endmacro %} {% macro scripts() -%}
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
@@ -100,4 +138,5 @@
   integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
   crossorigin="anonymous"
 ></script>
+<script src="{{url_for('static', filename='js/base.min.js')}}"></script>
 {%- endmacro %}

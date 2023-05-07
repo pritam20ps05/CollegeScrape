@@ -1,58 +1,16 @@
 var counsellingData = {};
 var counsellingDataSelect2 = {};
 
-// Form validation code
-(() => {
-  "use strict";
-
-  // Fetch all the forms we want to apply custom Bootstrap validation styles to
-  const forms = $(".needs-validation");
-  const acckey = $("#api-acc");
-
-  // Loop over them and prevent submission
-  Array.from(forms).forEach((form) => {
-    form.addEventListener(
-      "submit",
-      (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        if (isFormValid(form, acckey)) {
-          form.classList.remove("was-validated");
-          formCallback(acckey);
-        } else {
-          form.classList.add("was-validated");
-        }
-      },
-      false
-    );
-  });
-})();
-
-function isFormValid(form, accKey) {
-  if (form.checkValidity()) {
-    // check if access key valid
-    var res = $.ajax({
-      method: "POST",
-      url: "/api/authorize",
-      data: JSON.stringify({ acckey: accKey.val() }),
-      contentType: "application/json",
-      dataType: "json",
-      async: false,
-    }).responseJSON;
-
-    if (res.isValid) {
-      accKey.removeClass("is-invalid");
-      return true;
-    } else {
-      accKey.addClass("is-invalid");
-      return false;
-    }
-  } else {
-    return false;
+$('#cssearch').on('submit', (e) => {
+  if (e.target.checkValidity()) {
+    searchCallback();
   }
-}
+});
 
-function formCallback(acckey) {
+function searchCallback() {
+  if (key === "") {
+    return
+  }
   // get form data
   var instts = Array();
   var insts = Array();
@@ -103,7 +61,8 @@ function formCallback(acckey) {
     quotas: quotas,
     sts: sts,
     gens: gens,
-    acckey: acckey.val(),
+    key: key,
+    token: e3(key),
   };
   // update data on table
   $.ajax({
@@ -185,28 +144,29 @@ $("#table").bootstrapTable({
   advancedSearch: true,
   idTable: "advancedTable",
   showPrint: true,
-  showExport: true,
-  exportDataType: "all",
-  exportTypes: ["pdf"],
-  exportOptions: {
-    fileName: 'SearchResults',
-    jspdf: {
-      autotable: {
-        styles: {
-          overflow: 'linebreak',
-          lineWidth: 1,
-          cellPadding: 5,
-          fontSize: 10,
-          halign: "center",
-          cellWidth: "wrap",
-          columnWidth: 'auto'
-        },
-        headerStyles: {
-          halign: "center",
-        },
-        theme: 'grid',
-      }
-    }
+  printPageBuilder: (table) => {
+    return `
+    <html>
+      <head>
+        <style type="text/css" media="print"> 
+          @page {   size: auto;  margin: 25px 0 25px 0;  }  
+        </style>  
+        <style type="text/css" media="all">  
+          table {    border-collapse: collapse;    font-size: 12px;  }  
+          table, th, td {    border: 1px solid grey; }  
+          th, td {    text-align: center;   vertical-align: middle;  }  
+          p {    font-weight: bold;    margin-left:20px;  }  
+          table {    width:94%;    margin-left:3%;    margin-right:3%;  }  
+          div.bs-table-print {    text-align:center;  }  
+        </style>  
+      </head>  
+      <title>Print Table</title>  
+      <body> 
+        <h1 style="text-align: center;">${counsellingData.counselling}</h1> 
+        <p>Printed on: ${new Date()} </p>
+        <div class="bs-table-print"> ${table} </div>  
+      </body>  
+    </html>`
   },
   data: [],
 });

@@ -23,8 +23,7 @@
     <!-- Navbar -->
     {{ base.navbar(2) }}
 
-    <div class="alert alert-primary d-flex align-items-center justify-content-center" role="alert">
-      This tool is currently under early access so maximum number of results are capped at 500 and export option might cause lag in some devices for large data
+    <div class="alert alert-primary d-none align-items-center justify-content-center" role="alert">
     </div>
 
     <div class="container my-3">
@@ -41,7 +40,7 @@
 
         <div class="row justify-content-center">
           <div class="col-md-7 col-lg-8">
-            <form class="needs-validation" novalidate="">
+            <form id="cssearch" class="needs-validation" novalidate="">
               <div class="row g-3">
                 <div class="col-sm-6">
                   <label for="CounsellingName" class="form-label">Counselling</label>
@@ -86,6 +85,12 @@
 
                 <div class="col-sm-6">
                   <label for="rank-buff" class="form-label">Rank Buffer</label>
+                  <i
+                    role="button"
+                    class="bi bi-question-circle ms-1 opacity-75"
+                    data-bs-toggle="modal"
+                    data-bs-target="#rankbuffinfo"
+                  ></i>
                   <input
                     type="number"
                     class="form-control stage2"
@@ -94,6 +99,36 @@
                     disabled
                   />
                   <div class="invalid-feedback">Please enter a valid rank buffer</div>
+                  <div class="modal fade" id="rankbuffinfo" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">Rank Buffer</h5>
+                          <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                          ></button>
+                        </div>
+                        <div class="modal-body">
+                          <p>
+                            Rank buffer is a part of the search query (filter) which if set return
+                            results with closing rank within rank - rank_buffer and rank +
+                            rank_buffer. Its intented use is to narrow the scope of the results and
+                            is generally used for low ranks (high scorers) to filter out
+                            potential unwanted courses or colleges. At high ranks (low scorers) 
+                            setting it might cause no results to be shown at all, for obvious
+                            reasons.
+                          </p>
+                          <p>
+                            If Rank Buffer is not set then results will have closing rank less than 
+                            or equal to the provided rank filter (if provided).
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <div class="col-sm-6">
@@ -157,20 +192,6 @@
                   ></select>
                 </div>
 
-                <div class="col-sm-12">
-                  <label for="api-acc" class="form-label">Access Key</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="api-acc"
-                    placeholder="e.g. abcd#123"
-                    required
-                  />
-                  <div id="api-acc-if" class="invalid-feedback">
-                    Please enter a valid access key
-                  </div>
-                </div>
-
                 <button class="w-100 btn btn-primary btn-lg" type="submit">Search</button>
               </div>
             </form>
@@ -191,8 +212,8 @@
               <th data-field="quota" data-halign="center" data-align="center">Quota</th>
               <th data-field="st" data-halign="center" data-align="center">Seat Type</th>
               <th data-field="gender" data-halign="center" data-align="center">Gender</th>
-              <th data-field="or" data-halign="center" data-align="center">Opening Rank</th>
-              <th data-field="cr" data-halign="center" data-align="center">Closing Rank</th>
+              <th data-field="or" data-halign="center" data-align="center" data-sortable="true">Opening Rank</th>
+              <th data-field="cr" data-halign="center" data-align="center" data-sortable="true">Closing Rank</th>
             </tr>
           </thead>
         </table>
@@ -207,8 +228,7 @@
     <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.27.0/libs/jsPDF/jspdf.umd.min.js"></script>
     <script src="https://unpkg.com/bootstrap-table@1.21.4/dist/bootstrap-table.min.js"></script>
     <script src="https://unpkg.com/bootstrap-table@1.21.4/dist/extensions/toolbar/bootstrap-table-toolbar.min.js"></script>
-    <script src="https://unpkg.com/bootstrap-table@1.21.4/dist/extensions/export/bootstrap-table-export.js"></script>
-    <script src="https://unpkg.com/bootstrap-table@1.21.4/dist/extensions/print/bootstrap-table-print.min.js"></script>
-    <script src="{{url_for('static', filename='js/counsellingsearch.js')}}"></script>
+    <script src="{{url_for('static', filename='js/bootstrap-table-print.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/counsellingsearch.min.js')}}"></script>
   </body>
 </html>
