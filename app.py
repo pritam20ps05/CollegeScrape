@@ -13,7 +13,7 @@ app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 
 with app.app_context():
-    from api.api_routes import api
+    from api import api
     app.register_blueprint(api)
 
 # Page routes
