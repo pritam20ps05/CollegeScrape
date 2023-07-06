@@ -1,14 +1,14 @@
 from flask import Flask, render_template, Response
 from jsonschema import ValidationError
 from errors import *
-from os import environ
+from core import *
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = environ['SECRET_KEY']
+app.config['SECRET_KEY'] = secretkey
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = environ['MAIL_USERNAME']
-app.config['MAIL_PASSWORD'] = environ['MAIL_PASSWORD']
+app.config['MAIL_USERNAME'] = mailusername
+app.config['MAIL_PASSWORD'] = mailpassword
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 

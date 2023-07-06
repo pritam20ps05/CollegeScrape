@@ -3,13 +3,12 @@ from flask_mail import Mail, Message
 from jsonschema import validate
 from errors import *
 from .utils import *
+from core import *
 import pymongo
-
-from os import environ
 
 api = Blueprint('api', __name__, url_prefix='/api')
 
-client = pymongo.MongoClient(environ['MONGODB_URI'])
+client = pymongo.MongoClient(mongouri)
 db = client.counselling
 cdata_col = db.counsellingData
 mail = Mail(current_app)
@@ -39,7 +38,7 @@ def contactus():
     ssubject = str(query.get('subject'))
     smessage = str(query.get('message'))
 
-    msg = Message(f'{sname}: {ssubject}', sender = environ['MAIL_USERNAME'], recipients = [environ['MAIL_RECIPIENT']])
+    msg = Message(f'{sname}: {ssubject}', sender = mailusername, recipients = [mailrecipient])
     msg.body = f'Mail: {smail}\n\n{smessage}'
     mail.send(msg)
     return {
