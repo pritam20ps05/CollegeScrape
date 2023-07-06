@@ -1,4 +1,6 @@
 from flask import Flask, render_template, Response
+from jsonschema import ValidationError
+from errors import *
 from os import environ
 
 app = Flask(__name__)
@@ -28,8 +30,16 @@ def collegeSearch():
     return render_template('underconstruction.html')
 
 @app.errorhandler(404)
-def not_found(e):
-    return  Response(render_template('404.html'), 404)
+def notfound(e):
+    return Response(render_template('404.html'), 404)
+
+@app.errorhandler(CustomError)
+def customerr(e):
+    return {'error': e.message}, e.status_code
+
+@app.errorhandler(ValidationError)
+def notvalid(e):
+    return {'error': e.message}, 400
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)

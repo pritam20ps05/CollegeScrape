@@ -1,7 +1,8 @@
 from flask import Blueprint, request, current_app
-from jsonschema import validate, ValidationError
 from flask_mail import Mail, Message
+from jsonschema import validate
 import pymongo, random, string
+from errors import *
 
 from os import environ
 
@@ -35,8 +36,12 @@ class Authorize():
         if key in self.registeredkeys:
             if enckey == self.hash_fnv32a(key):
                 self.registeredkeys.remove(key)
-                return True
-        return False
+                return
+        raise AuthorizationError()
+
+class AuthorizationError(CustomError):
+    def __init__(self):
+        super().__init__('Forbidden request, Key-Token mismatch', 403)
 
 auth = Authorize()
 
@@ -91,14 +96,8 @@ def contactus():
     }
     query = request.get_json()
     schema['minProperties'] = len(schema['properties'].keys())
-    try:
-        validate(query, schema=schema)
-    except ValidationError as e:
-        return {'error': e.message}, 400
-    iskeyvalid = auth.isKeyValid(str(query.get('key')), str(query.get('token')))
-    if not iskeyvalid:
-        return {'error': 'Forbidden request, Key-Token mismatch'}, 403
-    
+    validate(query, schema=schema)
+    auth.isKeyValid(str(query.get('key')), str(query.get('token')))
     sname = str(query.get('name'))
     smail = str(query.get('email'))
     ssubject = str(query.get('subject'))
@@ -177,10 +176,7 @@ def insttfilter():
     }
     query.update(qe)
     schema['minProperties'] = len(schema['properties'].keys())
-    try:
-        validate(query, schema=schema)
-    except ValidationError as e:
-        return {'error': e.message}, 400
+    validate(query, schema=schema)
     coun_data = cdata_col.find_one({'counselling': str(query.get('counsellingname'))}, {'_id': 0})
     coun_col = db[coun_data['collection']]
     db_query = dbQuery(query)
@@ -250,10 +246,7 @@ def instfilter():
     }
     query.update(qe)
     schema['minProperties'] = len(schema['properties'].keys())
-    try:
-        validate(query, schema=schema)
-    except ValidationError as e:
-        return {'error': e.message}, 400
+    validate(query, schema=schema)
     coun_data = cdata_col.find_one({'counselling': str(query.get('counsellingname'))}, {'_id': 0})
     coun_col = db[coun_data['collection']]
     db_query = dbQuery(query)
@@ -321,16 +314,11 @@ def counseldata():
     }
     query = request.get_json()
     schema['minProperties'] = len(schema['properties'].keys())
-    try:
-        validate(query, schema=schema)
-    except ValidationError as e:
-        return {'error': e.message}, 400
-    iskeyvalid = auth.isKeyValid(str(query.get('key')), str(query.get('token')))
-    if not iskeyvalid:
-        return {'error': 'Forbidden request, Key-Token mismatch'}, 403
+    validate(query, schema=schema)
+    auth.isKeyValid(str(query.get('key')), str(query.get('token')))
     coun_data = cdata_col.find_one({'counselling': str(query.get('counsellingname'))}, {'_id': 0})
     if not coun_data:
-        return {'error': 'Bad request, provided counselling name does not exist'}, 400
+        raise CustomError('Bad request, provided counselling name does not exist', 400)
     coun_col = db[coun_data['collection']]
     db_query = dbQuery(query)
     counsellingdata = coun_col.find(db_query, {'_id': 0})
