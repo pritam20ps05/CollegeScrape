@@ -1,6 +1,5 @@
 from flask import Blueprint, request, current_app
 from flask_mail import Mail, Message
-from errors import *
 from .utils import *
 from core import *
 import pymongo

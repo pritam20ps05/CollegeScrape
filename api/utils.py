@@ -2,7 +2,7 @@ from jsonschema import validate
 from functools import wraps
 from flask import request
 import random, string
-from errors import *
+from core import *
 
 schema_dbquery = {
     'type': 'object',

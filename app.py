@@ -1,6 +1,5 @@
 from flask import Flask, render_template, Response
 from jsonschema import ValidationError
-from errors import *
 from core import *
 
 app = Flask(__name__)
