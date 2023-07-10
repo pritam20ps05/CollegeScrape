@@ -1,5 +1,3 @@
-var key = "";
-
 (() => {
   "use strict";
 
@@ -17,7 +15,6 @@ var key = "";
           form.classList.add("was-validated");
         } else {
           form.classList.remove("was-validated");
-          setKeyGlobal();
         }
       },
       false
@@ -25,13 +22,24 @@ var key = "";
   });
 })();
 
-function setKeyGlobal() {
-  var res = $.ajax({
+function makeApiCall(url, data, auth, callback) {
+  var data_copy = Object.assign({}, data);
+  if (auth) {
+    var res = $.ajax({
+      method: "POST",
+      url: "/api/authorize",
+      async: false,
+    }).responseJSON;
+    data_copy["key"] = res.key;
+    data_copy["token"] = e3(res.key);
+  }
+  $.ajax({
     method: "POST",
-    url: "/api/authorize",
-    async: false,
-  }).responseJSON;
-  key = res.key;
+    url: url,
+    data: JSON.stringify(data_copy),
+    contentType: "application/json",
+    dataType: "json",
+  }).done((msg) => {callback(msg);});
 }
 
 $("#cscontactus").on("submit", (e) => {
@@ -46,25 +54,19 @@ function contactusCallback(form) {
     email: form[1].value,
     subject: form[2].value,
     message: form[3].value,
-    key: key,
-    token: e3(key),
   };
-  $.ajax({
-    method: "POST",
-    url: "/api/contactus",
-    data: JSON.stringify(cdata),
-    contentType: "application/json",
-    dataType: "json",
-  }).done((msg) => {
-    form[0].value = '';
-    form[1].value = '';
-    form[2].value = '';
-    form[3].value = '';
-    $("#contactusinfo").text(msg["message"]);
-    $("#contactusinfo").removeClass("d-none");
-    setTimeout((e) => {
-        $("#contactusinfo").text("");
-        $("#contactusinfo").addClass("d-none");
-    }, 5000);
-  });
+  makeApiCall("/api/contactus", cdata, true, 
+    (msg) => {
+      form[0].value = '';
+      form[1].value = '';
+      form[2].value = '';
+      form[3].value = '';
+      $("#contactusinfo").text(msg["message"]);
+      $("#contactusinfo").removeClass("d-none");
+      setTimeout((e) => {
+          $("#contactusinfo").text("");
+          $("#contactusinfo").addClass("d-none");
+      }, 5000);
+    }
+  );
 }
