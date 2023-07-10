@@ -44,7 +44,8 @@ def counselinfo():
     return counsellinginfo
 
 @api.route('/institutetypefilter', methods=['POST'])
-@validateSchema(schema_dbquery, required=['counsellingname', 'roundNo', 'instts'])
+@validateSchema(schema_dbquery, required=['counsellingname', 'roundNo', 'instts', 'key', 'token'])
+@authorizeToken
 def insttfilter():
     query = request.get_json()
     qe = {
@@ -68,7 +69,8 @@ def insttfilter():
     }
 
 @api.route('/institutefilter', methods=['POST'])
-@validateSchema(schema_dbquery, required=['counsellingname', 'roundNo', 'instts', 'insts'])
+@validateSchema(schema_dbquery, required=['counsellingname', 'roundNo', 'instts', 'insts', 'key', 'token'])
+@authorizeToken
 def instfilter():
     query = request.get_json()
     qe = {

@@ -285,7 +285,7 @@ $("#inst-type").on("change", function (e) {
         roundNo: parseInt($("#RoundNo").select2("data")[0].text),
         instts: data_instts,
       }, 
-      false, 
+      true, 
       (msg) => {
         var s2data_inst = Array();
         var s2data_apn = Array();
@@ -339,7 +339,7 @@ $("#inst-name").on("change", function (e) {
         instts: data_instts,
         insts: data_insts,
       }, 
-      false, 
+      true, 
       (msg) => {
         var s2data_apn = Array();
   
