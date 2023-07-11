@@ -1,8 +1,8 @@
-from flask import Blueprint, request, current_app
-from flask_mail import Mail, Message
-from .utils import *
-from core import *
 import pymongo
+from core import *
+from .utils import *
+from flask_mail import Mail, Message
+from flask import Blueprint, request, current_app
 
 api = Blueprint('api', __name__, url_prefix='/api')
 

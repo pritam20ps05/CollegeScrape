@@ -1,6 +1,6 @@
-from flask import Flask, render_template, Response
-from jsonschema import ValidationError
 from core import *
+from jsonschema import ValidationError
+from flask import Flask, render_template, Response
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = secretkey
