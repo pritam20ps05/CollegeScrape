@@ -19,6 +19,8 @@ class LoginTracker():
                 identifier = session.get('user').get('login_identifier')
                 if identifier in self.registered_identifiers:
                     return
+                raise CustomError('identifier didnot match')
+            raise CustomError('identifier not found')
         session.clear()
         raise LoginError(request.method)
         
@@ -33,8 +35,6 @@ login_tracker = LoginTracker()
 def requireLogin(f):
     @wraps(f)
     def wrapper(*args, **kw):
-        # login_tracker.verifyLogin()
-        if not session.get('user'):
-            session.clear()
+        login_tracker.verifyLogin()
         return f(*args, **kw)
     return wrapper
