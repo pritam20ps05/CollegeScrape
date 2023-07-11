@@ -33,6 +33,8 @@ login_tracker = LoginTracker()
 def requireLogin(f):
     @wraps(f)
     def wrapper(*args, **kw):
-        login_tracker.verifyLogin()
+        # login_tracker.verifyLogin()
+        if not session.get('user'):
+            session.clear()
         return f(*args, **kw)
     return wrapper
