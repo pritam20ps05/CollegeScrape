@@ -36,7 +36,6 @@ def callback():
     return redirect('/')
 
 @user_login.route('/logout/')
-@requireLogin
 def logout():
     login_tracker.registerLogout()
     return redirect(
