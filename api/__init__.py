@@ -1,5 +1,6 @@
 import pymongo
 from core import *
+from auth import *
 from .utils import *
 from flask_mail import Mail, Message
 from flask import Blueprint, request, current_app
@@ -13,6 +14,7 @@ mail = Mail(current_app)
 
 # API routes
 @api.route('/authorize', methods=['POST'])
+@requireLogin
 def authorize():
     newkey = auth.genKey()
     return {
@@ -20,6 +22,7 @@ def authorize():
     }
 
 @api.route('/contactus', methods=['POST'])
+@requireLogin
 @validateSchema(schema_contactus, required=['name', 'email', 'subject', 'message', 'key', 'token'])
 @authorizeToken
 def contactus():
@@ -37,6 +40,7 @@ def contactus():
     }
 
 @api.route('/counsellinginfo', methods=['POST'])
+@requireLogin
 @validateSchema(schema_dbquery, required=['counsellingname'])
 def counselinfo():
     query = request.get_json()
@@ -44,6 +48,7 @@ def counselinfo():
     return counsellinginfo
 
 @api.route('/institutetypefilter', methods=['POST'])
+@requireLogin
 @validateSchema(schema_dbquery, required=['counsellingname', 'roundNo', 'instts', 'key', 'token'])
 @authorizeToken
 def insttfilter():
@@ -69,6 +74,7 @@ def insttfilter():
     }
 
 @api.route('/institutefilter', methods=['POST'])
+@requireLogin
 @validateSchema(schema_dbquery, required=['counsellingname', 'roundNo', 'instts', 'insts', 'key', 'token'])
 @authorizeToken
 def instfilter():
@@ -91,6 +97,7 @@ def instfilter():
     }
     
 @api.route('/counsellingdata', methods=['POST'])
+@requireLogin
 @validateSchema(schema_dbquery, required=['counsellingname', 'roundNo', 'rank', 
                                            'rankBuff', 'instts', 'insts', 'apns', 
                                            'quotas', 'sts', 'gens', 'key', 'token'])
