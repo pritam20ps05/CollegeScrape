@@ -21,23 +21,26 @@ oauth.register(
 
 @user_login.route('/login/')
 def login():
+    if session.get('token'):
+        return redirect('/')
     return oauth.auth0.authorize_redirect(
         redirect_uri=url_for('login.callback', _external=True)
     )
 
 @user_login.route('/callback/', methods=['GET', 'POST'])
 def callback():
+    if session.get('token'):
+        return redirect('/')
     try:
         token = oauth.auth0.authorize_access_token()
     except OAuthError as e:
         return f'Error: {e.description}'
-    session['user'] = token
-    login_tracker.registerLogin()
+    loginhandler.registerLogin(token)
     return redirect('/')
 
 @user_login.route('/logout/')
 def logout():
-    login_tracker.registerLogout()
+    loginhandler.registerLogout()
     return redirect(
         'https://pritam20ps05.us.auth0.com/v2/logout?'
         + urlencode(

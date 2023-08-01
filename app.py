@@ -21,22 +21,24 @@ with app.app_context():
 
 # Page routes
 @app.route('/')
-def home():
-    return render_template('home.html', user=session.get('user'))
+@loginhandler.handleLogin(loginrequired=False)
+def home(userinfo):
+    return render_template('home.html', user=userinfo)
 
 @app.route('/counsellingsearch/')
-@requireLogin
-def counselSearch():
-    return render_template('counsellingsearch.html', user=session.get('user'))
+@loginhandler.handleLogin(loginrequired=True)
+def counselSearch(userinfo):
+    return render_template('counsellingsearch.html', user=userinfo)
 
 @app.route('/collegesearch/')
-@requireLogin
-def collegeSearch():
-    return render_template('underconstruction.html', user=session.get('user'))
+@loginhandler.handleLogin(loginrequired=True)
+def collegeSearch(userinfo):
+    return render_template('underconstruction.html', user=userinfo)
 
 @app.errorhandler(404)
-def notfound(e):
-    return Response(render_template('404.html', user=session.get('user')), 404)
+@loginhandler.handleLogin(loginrequired=False)
+def notfound(userinfo, e):
+    return Response(render_template('404.html', user=userinfo), 404)
 
 @app.errorhandler(CustomError)
 def customerr(e):
@@ -49,7 +51,7 @@ def notvalid(e):
 @app.errorhandler(LoginError)
 def customerr(e):
     if e.method == 'GET':
-        return redirect('/login/')
+        return redirect(e.getredirecturl)
     else:
         return {'error': e.message}, 403
 

@@ -8,10 +8,11 @@ class CustomError(Exception):
         return self.message
     
 class LoginError(Exception):
-    def __init__(self, method: str, message: str = 'Please login before using this endpoint.') -> None:
+    def __init__(self, method: str, message: str = 'Please login before using this endpoint.', getredirecturl: str = '/login/') -> None:
         super().__init__(method, message)
         self.message = message
         self.method = method
+        self.getredirecturl = getredirecturl
 
     def __str__(self) -> str:
         return self.message

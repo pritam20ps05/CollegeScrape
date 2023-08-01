@@ -68,8 +68,8 @@
         {% if user %}
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="{{ user.userinfo.picture }}" class="rounded-circle" alt="profile image" width="30" height="30">
-            {{ user.userinfo.nickname }}
+            <img src="{{ user.picture }}" class="rounded-circle" alt="profile image" width="30" height="30">
+            {{ user.username }}
           </a>
           <ul class="dropdown-menu opacity-75">
             <li><a class="dropdown-item" href="#">Account</a></li>

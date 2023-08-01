@@ -1,4 +1,3 @@
-import pymongo
 from core import *
 from auth import *
 from .utils import *
@@ -7,25 +6,24 @@ from flask import Blueprint, request, current_app
 
 api = Blueprint('api', __name__, url_prefix='/api')
 
-client = pymongo.MongoClient(mongouri)
 db = client.counselling
 cdata_col = db.counsellingData
 mail = Mail(current_app)
 
 # API routes
 @api.route('/authorize', methods=['POST'])
-@requireLogin
-def authorize():
+@loginhandler.handleLogin(loginrequired=True, passUserinfo=False)
+def authorize(userinfo):
     newkey = auth.genKey()
     return {
         'key': newkey
     }
 
 @api.route('/contactus', methods=['POST'])
-@requireLogin
+@loginhandler.handleLogin(loginrequired=True, passUserinfo=False)
 @validateSchema(schema_contactus, required=['name', 'email', 'subject', 'message', 'key', 'token'])
 @authorizeToken
-def contactus():
+def contactus(userinfo):
     query = request.get_json()
     sname = str(query.get('name'))
     smail = str(query.get('email'))
@@ -40,18 +38,18 @@ def contactus():
     }
 
 @api.route('/counsellinginfo', methods=['POST'])
-@requireLogin
+@loginhandler.handleLogin(loginrequired=True, passUserinfo=False)
 @validateSchema(schema_dbquery, required=['counsellingname'])
-def counselinfo():
+def counselinfo(userinfo):
     query = request.get_json()
     counsellinginfo = cdata_col.find_one({'counselling': str(query.get('counsellingname'))}, {'_id': 0, 'collection': 0})
     return counsellinginfo
 
 @api.route('/institutetypefilter', methods=['POST'])
-@requireLogin
+@loginhandler.handleLogin(loginrequired=True, passUserinfo=False)
 @validateSchema(schema_dbquery, required=['counsellingname', 'roundNo', 'instts', 'key', 'token'])
 @authorizeToken
-def insttfilter():
+def insttfilter(userinfo):
     query = request.get_json()
     qe = {
         'rank': None, 
@@ -74,10 +72,10 @@ def insttfilter():
     }
 
 @api.route('/institutefilter', methods=['POST'])
-@requireLogin
+@loginhandler.handleLogin(loginrequired=True, passUserinfo=False)
 @validateSchema(schema_dbquery, required=['counsellingname', 'roundNo', 'instts', 'insts', 'key', 'token'])
 @authorizeToken
-def instfilter():
+def instfilter(userinfo):
     query = request.get_json()
     qe = {
         'rank': None, 
@@ -97,12 +95,12 @@ def instfilter():
     }
     
 @api.route('/counsellingdata', methods=['POST'])
-@requireLogin
+@loginhandler.handleLogin(loginrequired=True, passUserinfo=False)
 @validateSchema(schema_dbquery, required=['counsellingname', 'roundNo', 'rank', 
                                            'rankBuff', 'instts', 'insts', 'apns', 
                                            'quotas', 'sts', 'gens', 'key', 'token'])
 @authorizeToken
-def counseldata():
+def counseldata(userinfo):
     query = request.get_json()
     coun_data = cdata_col.find_one({'counselling': str(query.get('counsellingname'))}, {'_id': 0})
     if not coun_data:
