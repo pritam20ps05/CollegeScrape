@@ -17,19 +17,20 @@ class LoginHandler():
                 'username': logindata['userinfo']['nickname'],
                 'nickname': logindata['userinfo']['nickname'],
                 'picture': logindata['userinfo']['picture'],
+                'phone': '',
                 'email': user_email,
                 'createdAt': current_time,
                 'lastLogin': current_time,
             })
-        new_token = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for _ in range(32))
+        new_token = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for _ in range(128))
         session['token'] = new_token
         session_entry = {
             'token': new_token,
             'email': user_email,
             'isLoggedIn': True,
             'userAgent': str(request.user_agent),
-            'createdip': str(request.remote_addr),
-            'lastip': str(request.remote_addr),
+            'createdip': str(request.environ.get('HTTP_X_FORWARDED_FOR', request.remote_addr)),
+            'lastip': str(request.environ.get('HTTP_X_FORWARDED_FOR', request.remote_addr)),
             'createdAt': current_time,
             'lastActive': current_time,
         }
@@ -51,11 +52,11 @@ class LoginHandler():
         current_time = datetime.utcnow().strftime(datetime_format)
         if sessiondata:
             if passUserinfo:
-                logindb.sessions.update_one({'token': sessiondata['token']}, {'$set': {'lastActive': current_time, 'lastip': str(request.remote_addr)}})
+                logindb.sessions.update_one({'token': sessiondata['token']}, {'$set': {'lastActive': current_time, 'lastip': str(request.environ.get('HTTP_X_FORWARDED_FOR', request.remote_addr))}})
                 return logindb.userinfo.find_one({'email': sessiondata['email']}, {'_id': 0})
             return None
+        session.clear()
         if loginrequired:
-            session.clear()
             raise LoginError(request.method)
         
     def registerLogout(self) -> None:
