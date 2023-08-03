@@ -59,10 +59,10 @@
           <a class="nav-link {% if active == 1 %}active{% endif %}" href="/">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if active == 2 %}active{% endif %}" href="/counsellingsearch">Counselling Search</a>
+          <a class="nav-link {% if active == 2 %}active{% endif %}" href="/counsellingsearch/">Counselling Search</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if active == 3 %}active{% endif %}" href="/collegesearch">College Search</a>
+          <a class="nav-link {% if active == 3 %}active{% endif %}" href="/collegesearch/">College Search</a>
         </li>
 
         {% if user %}
@@ -72,14 +72,14 @@
             {{ user.username }}
           </a>
           <ul class="dropdown-menu opacity-75">
-            <li><a class="dropdown-item" href="#">Account</a></li>
+            <li><a class="dropdown-item" href="/account/">Account</a></li>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+            <li><a class="dropdown-item" href="/logout/">Logout</a></li>
           </ul>
         </li>
         {% else %}
         <li class="nav-item">
-          <a class="nav-link" href="/login">Sign In</a>
+          <a class="nav-link" href="/login/">Sign In</a>
         </li>
         {% endif %}
 

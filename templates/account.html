@@ -1,0 +1,156 @@
+{% import 'base.html' as base %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Account-{{ user.username }}</title>
+    {{ base.header() }}
+  </head>
+
+  <body class="d-flex flex-column vh-100">
+    <!-- Navbar -->
+    {{ base.navbar(0, user) }}
+
+    <div class="container my-3">
+      <main>
+        <div class="py-4 text-center">
+          <h1>Account</h1>
+        </div>
+
+        <img
+          src="{{ user.picture }}"
+          class="img-thumbnail mx-auto d-block"
+          alt="profile image"
+          width="100"
+          height="100"
+        />
+
+        <div class="row justify-content-center my-4">
+          <div class="col-md-10 col-lg-8">
+            <form id="accsection" class="needs-validation" novalidate="">
+              <div class="row g-3">
+                <div class="col-sm-6">
+                  <label for="accname" class="form-label">Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="accname"
+                    placeholder="e.g. Rajesh Kumar"
+                    value="{{ user.name }}"
+                    autocomplete="off"
+                    disabled
+                  />
+                  <div class="invalid-feedback">Please enter a valid name</div>
+                </div>
+
+                <div class="col-sm-6">
+                  <label for="accusername" class="form-label">Username</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="accusername"
+                    placeholder="e.g. rajesh123"
+                    value="{{ user.username }}"
+                    autocomplete="off"
+                    disabled
+                  />
+                  <div class="invalid-feedback">Please enter a valid username</div>
+                </div>
+
+                <div class="col-sm-6">
+                  <label for="accemail" class="form-label">Email</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="accemail"
+                    placeholder="e.g. rajeshkumar123@abc.com"
+                    value="{{ user.email }}"
+                    autocomplete="off"
+                    disabled
+                  />
+                  <div class="invalid-feedback">Please enter a valid email</div>
+                </div>
+
+                <div class="col-sm-6">
+                  <label for="accphone" class="form-label">Phone No.</label>
+                  <i
+                    role="button"
+                    class="bi bi-question-circle ms-1 opacity-75"
+                    data-bs-toggle="modal"
+                    data-bs-target="#rankbuffinfo"
+                  ></i>
+                  <input
+                    type="tel"
+                    class="form-control"
+                    id="accphone"
+                    placeholder="e.g. 0123456789"
+                    value="{{ user.phone }}"
+                    autocomplete="off"
+                    disabled
+                  />
+                  <div class="invalid-feedback">Please enter a valid phone no.</div>
+                  <div class="modal fade" id="rankbuffinfo" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">Phone No.</h5>
+                          <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                          ></button>
+                        </div>
+                        <div class="modal-body">
+                          <p>
+                            The Phone No. of a user is not set at the time of creation of a new user
+                            but can be set after verifying the phone no. using OTP authentication.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <label for="acccreatedat" class="form-label">Account Created At (UTC)</label>
+                    <input
+                      type="datetime-local"
+                      class="form-control"
+                      id="acccreatedat"
+                      placeholder=""
+                      value="{{ user.createdAt }}"
+                      autocomplete="off"
+                      disabled
+                    />
+                    <div class="invalid-feedback">Please enter a valid datetime</div>
+                </div>
+
+                <div class="col-sm-6">
+                    <label for="acclastlogin" class="form-label">Account Last Login At (UTC)</label>
+                    <input
+                      type="datetime-local"
+                      class="form-control"
+                      id="acclastlogin"
+                      placeholder=""
+                      value="{{ user.lastLogin }}"
+                      autocomplete="off"
+                      disabled
+                    />
+                    <div class="invalid-feedback">Please enter a valid datetime</div>
+                </div>
+
+                <button disabled class="w-100 btn btn-primary btn-lg d-none" type="submit">
+                  Update
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    {{ base.footer() }}
+    
+    {{ base.scripts() }}
+  </body>
+</html>

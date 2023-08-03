@@ -35,6 +35,11 @@ def counselSearch(userinfo):
 def collegeSearch(userinfo):
     return render_template('underconstruction.html', user=userinfo)
 
+@app.route('/account/')
+@loginhandler.handleLogin(loginrequired=True)
+def account(userinfo):
+    return render_template('account.html', user=userinfo)
+
 @app.errorhandler(404)
 @loginhandler.handleLogin(loginrequired=False)
 def notfound(userinfo, e):

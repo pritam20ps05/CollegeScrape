@@ -13,4 +13,4 @@ auth0client_secret = environ['AUTH0_CLIENT_SECRET']
 auth0domain = environ['AUTH0_DOMAIN']
 
 client = pymongo.MongoClient(mongouri)
-datetime_format = '%d-%m-%Y %H:%M:%S'
+datetime_format = '%Y-%m-%dT%H:%M:%S'
