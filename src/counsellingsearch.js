@@ -8,9 +8,6 @@ $('#cssearch').on('submit', (e) => {
 });
 
 function searchCallback() {
-  if (key === "") {
-    return
-  }
   // get form data
   var instts = Array();
   var insts = Array();
@@ -61,32 +58,26 @@ function searchCallback() {
     quotas: quotas,
     sts: sts,
     gens: gens,
-    key: key,
-    token: e3(key),
   };
   // update data on table
-  $.ajax({
-    method: "POST",
-    url: "/api/counsellingdata",
-    data: JSON.stringify(fdata),
-    contentType: "application/json",
-    dataType: "json",
-  }).done((msg) => {
-    var tabledata = Array();
-    msg.data.forEach((curval, index) => {
-      tabledata.push({
-        instt: curval["Institute Type"],
-        inst: curval["Institute"],
-        apn: curval["Academic Program Name"],
-        quota: curval["Quota"],
-        st: curval["Seat Type"],
-        gender: curval["Gender"],
-        or: curval["Opening Rank"],
-        cr: curval["Closing Rank"],
+  makeApiCall("/api/counsellingdata", fdata, true, 
+    (msg) => {
+      var tabledata = Array();
+      msg.data.forEach((curval, index) => {
+        tabledata.push({
+          instt: curval["Institute Type"],
+          inst: curval["Institute"],
+          apn: curval["Academic Program Name"],
+          quota: curval["Quota"],
+          st: curval["Seat Type"],
+          gender: curval["Gender"],
+          or: curval["Opening Rank"],
+          cr: curval["Closing Rank"],
+        });
       });
-    });
-    $("#table").bootstrapTable("load", tabledata);
-  });
+      $("#table").bootstrapTable("load", tabledata);
+    }
+  );
 }
 
 function updateSelectData(element, data) {
@@ -173,86 +164,85 @@ $("#table").bootstrapTable({
 
 // Form events - counselling name
 $("#CounsellingName").on("select2:select", function (e) {
-  $.ajax({
-    method: "POST",
-    url: "/api/counsellinginfo",
-    data: JSON.stringify({ counsellingname: e.params.data.text }),
-    contentType: "application/json",
-    dataType: "json",
-  }).done((msg) => {
-    counsellingData = msg;
-    var s2data_round = Array();
-    var s2data_instt = Array();
-    var s2data_inst = Array();
-    var s2data_apn = Array();
-    var s2data_quota = Array();
-    var s2data_st = Array();
-    var s2data_gen = Array();
-
-    Array.from({ length: msg.Rounds }, (_, i) => i + 1).forEach((curval, index) => {
-      s2data_round.push({
-        id: index,
-        text: curval,
+  makeApiCall(
+    "/api/counsellinginfo", 
+    { counsellingname: e.params.data.text }, 
+    false, 
+    (msg) => {
+      counsellingData = msg;
+      var s2data_round = Array();
+      var s2data_instt = Array();
+      var s2data_inst = Array();
+      var s2data_apn = Array();
+      var s2data_quota = Array();
+      var s2data_st = Array();
+      var s2data_gen = Array();
+  
+      Array.from({ length: msg.Rounds }, (_, i) => i + 1).forEach((curval, index) => {
+        s2data_round.push({
+          id: index,
+          text: curval,
+        });
       });
-    });
-    msg["Institute Types"].forEach((curval, index) => {
-      s2data_instt.push({
-        id: index,
-        text: curval,
+      msg["Institute Types"].forEach((curval, index) => {
+        s2data_instt.push({
+          id: index,
+          text: curval,
+        });
       });
-    });
-    msg["Institutes"].forEach((curval, index) => {
-      s2data_inst.push({
-        id: index,
-        text: curval,
+      msg["Institutes"].forEach((curval, index) => {
+        s2data_inst.push({
+          id: index,
+          text: curval,
+        });
       });
-    });
-    msg["Academic Program Names"].forEach((curval, index) => {
-      s2data_apn.push({
-        id: index,
-        text: curval,
+      msg["Academic Program Names"].forEach((curval, index) => {
+        s2data_apn.push({
+          id: index,
+          text: curval,
+        });
       });
-    });
-    msg["Quotas"].forEach((curval, index) => {
-      s2data_quota.push({
-        id: index,
-        text: curval,
+      msg["Quotas"].forEach((curval, index) => {
+        s2data_quota.push({
+          id: index,
+          text: curval,
+        });
       });
-    });
-    msg["Seat Types"].forEach((curval, index) => {
-      s2data_st.push({
-        id: index,
-        text: curval,
+      msg["Seat Types"].forEach((curval, index) => {
+        s2data_st.push({
+          id: index,
+          text: curval,
+        });
       });
-    });
-    msg["Genders"].forEach((curval, index) => {
-      s2data_gen.push({
-        id: index,
-        text: curval,
+      msg["Genders"].forEach((curval, index) => {
+        s2data_gen.push({
+          id: index,
+          text: curval,
+        });
       });
-    });
-
-    counsellingDataSelect2 = {
-      s2data_round: s2data_round,
-      s2data_instt: s2data_instt,
-      s2data_inst: s2data_inst,
-      s2data_apn: s2data_apn,
-      s2data_quota: s2data_quota,
-      s2data_st: s2data_st,
-      s2data_gen: s2data_gen,
-    };
-
-    updateSelectData("#RoundNo", s2data_round);
-    updateSelectData("#inst-type", s2data_instt);
-    updateSelectData("#inst-name", s2data_inst);
-    updateSelectData("#apname", s2data_apn);
-    updateSelectData("#quota", s2data_quota);
-    updateSelectData("#seat-type", s2data_st);
-    updateSelectData("#gender", s2data_gen);
-    $(".stage1").prop("disabled", false);
-    $("#cmessage").text("NOTE: " + msg["message"]);
-    $("#cmessage").removeClass("d-none");
-  });
+  
+      counsellingDataSelect2 = {
+        s2data_round: s2data_round,
+        s2data_instt: s2data_instt,
+        s2data_inst: s2data_inst,
+        s2data_apn: s2data_apn,
+        s2data_quota: s2data_quota,
+        s2data_st: s2data_st,
+        s2data_gen: s2data_gen,
+      };
+  
+      updateSelectData("#RoundNo", s2data_round);
+      updateSelectData("#inst-type", s2data_instt);
+      updateSelectData("#inst-name", s2data_inst);
+      updateSelectData("#apname", s2data_apn);
+      updateSelectData("#quota", s2data_quota);
+      updateSelectData("#seat-type", s2data_st);
+      updateSelectData("#gender", s2data_gen);
+      $(".stage1").prop("disabled", false);
+      $("#cmessage").text("NOTE: " + msg["message"]);
+      $("#cmessage").removeClass("d-none");
+    }
+  );
 });
 
 $("#CounsellingName").on("select2:unselect", function (e) {
@@ -288,36 +278,35 @@ $("#inst-type").on("change", function (e) {
       data_instts.push(curval.text);
     });
   if (data_instts.length != 0) {
-    $.ajax({
-      method: "POST",
-      url: "/api/institutetypefilter",
-      data: JSON.stringify({
+    makeApiCall(
+      "/api/institutetypefilter", 
+      {
         counsellingname: counsellingData.counselling,
         roundNo: parseInt($("#RoundNo").select2("data")[0].text),
         instts: data_instts,
-      }),
-      contentType: "application/json",
-      dataType: "json",
-    }).done((msg) => {
-      var s2data_inst = Array();
-      var s2data_apn = Array();
-
-      msg["Institutes"].forEach((curval, index) => {
-        s2data_inst.push({
-          id: index,
-          text: curval,
+      }, 
+      true, 
+      (msg) => {
+        var s2data_inst = Array();
+        var s2data_apn = Array();
+  
+        msg["Institutes"].forEach((curval, index) => {
+          s2data_inst.push({
+            id: index,
+            text: curval,
+          });
         });
-      });
-      msg["Academic Program Names"].forEach((curval, index) => {
-        s2data_apn.push({
-          id: index,
-          text: curval,
+        msg["Academic Program Names"].forEach((curval, index) => {
+          s2data_apn.push({
+            id: index,
+            text: curval,
+          });
         });
-      });
-
-      updateSelectData("#inst-name", s2data_inst);
-      updateSelectData("#apname", s2data_apn);
-    });
+  
+        updateSelectData("#inst-name", s2data_inst);
+        updateSelectData("#apname", s2data_apn);
+      }
+    );
   } else {
     updateSelectData("#inst-name", counsellingDataSelect2.s2data_inst);
     updateSelectData("#apname", counsellingDataSelect2.s2data_apn);
@@ -342,29 +331,28 @@ $("#inst-name").on("change", function (e) {
     });
 
   if (!(data_insts.length === 0 && data_instts.length === 0)) {
-    $.ajax({
-      method: "POST",
-      url: "/api/institutefilter",
-      data: JSON.stringify({
+    makeApiCall(
+      "/api/institutefilter", 
+      {
         counsellingname: counsellingData.counselling,
         roundNo: parseInt($("#RoundNo").select2("data")[0].text),
         instts: data_instts,
         insts: data_insts,
-      }),
-      contentType: "application/json",
-      dataType: "json",
-    }).done((msg) => {
-      var s2data_apn = Array();
-
-      msg["Academic Program Names"].forEach((curval, index) => {
-        s2data_apn.push({
-          id: index,
-          text: curval,
+      }, 
+      true, 
+      (msg) => {
+        var s2data_apn = Array();
+  
+        msg["Academic Program Names"].forEach((curval, index) => {
+          s2data_apn.push({
+            id: index,
+            text: curval,
+          });
         });
-      });
-
-      updateSelectData("#apname", s2data_apn);
-    });
+  
+        updateSelectData("#apname", s2data_apn);
+      }
+    );
   } else {
     updateSelectData("#apname", counsellingDataSelect2.s2data_apn);
   }

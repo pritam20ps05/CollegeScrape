@@ -21,7 +21,7 @@
 
   <body class="d-flex flex-column">
     <!-- Navbar -->
-    {{ base.navbar(2) }}
+    {{ base.navbar(2, user) }}
 
     <div class="alert alert-primary d-none align-items-center justify-content-center" role="alert">
     </div>
@@ -39,7 +39,7 @@
         </div>
 
         <div class="row justify-content-center">
-          <div class="col-md-7 col-lg-8">
+          <div class="col-md-10 col-lg-8">
             <form id="cssearch" class="needs-validation" novalidate="">
               <div class="row g-3">
                 <div class="col-sm-6">
