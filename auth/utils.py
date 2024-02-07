@@ -57,7 +57,9 @@ class LoginHandler():
             return None
         session.clear()
         if loginrequired:
-            raise LoginError(request.method, getredirecturl=url_for('login.login', us=urlstate))
+            lurl = url_for('login.login')
+            lurl += ('&', '?')[urlparse(lurl).query == ''] + urlencode({'us': urlstate})
+            raise LoginError(request.method, getredirecturl=lurl)
         
     def registerLogout(self) -> None:
         if session.get('token'):

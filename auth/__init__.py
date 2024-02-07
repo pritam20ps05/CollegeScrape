@@ -24,8 +24,10 @@ def login():
     us = request.args.get('us')
     if session.get('token'):
         return redirect(us)
+    curl = url_for('login.callback', _external=True)
+    curl += ('&', '?')[urlparse(curl).query == ''] + urlencode({'us': urlstate})
     return oauth.auth0.authorize_redirect(
-        redirect_uri=url_for('login.callback', us=us, _external=True)
+        redirect_uri=curl
     )
 
 @user_login.route('/callback/', methods=['GET', 'POST'])
