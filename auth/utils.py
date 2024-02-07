@@ -57,7 +57,7 @@ class LoginHandler():
             return None
         session.clear()
         if loginrequired:
-            lurl = url_for('login.login')
+            lurl = '/login/'
             lurl += ('&', '?')[urlparse(lurl).query == ''] + urlencode({'us': urlstate})
             raise LoginError(request.method, getredirecturl=lurl)
         
