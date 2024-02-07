@@ -2,7 +2,7 @@ from core import *
 from .utils import *
 from urllib.parse import quote_plus, urlencode
 from authlib.integrations.flask_client import OAuth, OAuthError
-from flask import Blueprint, redirect, session, url_for, current_app
+from flask import Blueprint, redirect, session, url_for, current_app, request
 
 user_login = Blueprint('login', __name__)
 
@@ -21,22 +21,24 @@ oauth.register(
 
 @user_login.route('/login/')
 def login():
+    us = request.args.get('us')
     if session.get('token'):
-        return redirect('/')
+        return redirect(us)
     return oauth.auth0.authorize_redirect(
-        redirect_uri=url_for('login.callback', _external=True)
+        redirect_uri=url_for('login.callback', us=us, _external=True)
     )
 
 @user_login.route('/callback/', methods=['GET', 'POST'])
 def callback():
+    us = request.args.get('us')
     if session.get('token'):
-        return redirect('/')
+        return redirect(us)
     try:
         token = oauth.auth0.authorize_access_token()
     except OAuthError as e:
         return f'Error: {e.description}'
     loginhandler.registerLogin(token)
-    return redirect('/')
+    return redirect(us)
 
 @user_login.route('/logout/')
 def logout():

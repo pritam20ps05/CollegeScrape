@@ -1,7 +1,7 @@
 from core import *
 import random, string
 from functools import wraps
-from flask import request, session
+from flask import request, session, url_for
 from datetime import datetime, timedelta
 
 logindb = client.login
@@ -47,7 +47,7 @@ class LoginHandler():
                         return session_entry
                     raise LoginError(request.method, getredirecturl='/logout/')
 
-    def verifyLogin(self, loginrequired: bool, passUserinfo: bool) -> None:
+    def verifyLogin(self, loginrequired: bool, passUserinfo: bool, urlstate: str) -> None:
         sessiondata = self.isLoggedin()
         current_time = datetime.utcnow().strftime(datetime_format)
         if sessiondata:
@@ -57,7 +57,7 @@ class LoginHandler():
             return None
         session.clear()
         if loginrequired:
-            raise LoginError(request.method)
+            raise LoginError(request.method, getredirecturl=url_for('login.login', us=urlstate))
         
     def registerLogout(self) -> None:
         if session.get('token'):
@@ -69,11 +69,11 @@ class LoginHandler():
                     return
         raise LoginError(request.method, getredirecturl='/')
     
-    def handleLogin(self, loginrequired: bool, passUserinfo: bool = True):
+    def handleLogin(self, loginrequired: bool, passUserinfo: bool = True, urlstate: str = '/'):
         def decorator(f):
             @wraps(f)
             def wrapper(*args, **kw):
-                userinfo = self.verifyLogin(loginrequired, passUserinfo)
+                userinfo = self.verifyLogin(loginrequired, passUserinfo, urlstate)
                 return f(userinfo, *args, **kw)
             return wrapper
         return decorator
