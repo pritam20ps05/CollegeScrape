@@ -25,7 +25,7 @@ def login():
     if session.get('token'):
         return redirect(us)
     curl = url_for('login.callback', _external=True)
-    curl += ('&', '?')[urlparse(curl).query == ''] + urlencode({'us': urlstate})
+    curl += ('&', '?')[urlparse(curl).query == ''] + urlencode({'us': us})
     return oauth.auth0.authorize_redirect(
         redirect_uri=curl
     )
